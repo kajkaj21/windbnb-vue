@@ -22,6 +22,14 @@ const selectedLocationColor = computed(() => {
   return store.showLocation ? "#333" : "#bdbdbd";
 });
 
+const isSelected = computed(() => {
+  return (
+    store.adultsCount !== 0 ||
+    store.childrenCount !== 0 ||
+    store.selectedLocation !== "Select Location"
+  );
+});
+
 const searchForCurrentFilters = () => {
   store.isSearchboxVisible = false;
 };
@@ -32,6 +40,10 @@ const removeSelectedLocation = (e) => {
 };
 
 const closeSearchbox = () => {
+  store.isSearchboxVisible = false;
+};
+
+const reset = () => {
   store.isSearchboxVisible = false;
   store.selectedLocation = "Select Location";
   store.adultsCount = 0;
@@ -62,9 +74,18 @@ const closeSearchbox = () => {
         class="guests-container"
       ></SelectGuestsContainer>
     </keep-alive>
-    <button @click="searchForCurrentFilters">
-      <span class="material-icons"> search </span> Search
-    </button>
+    <div class="buttons-container">
+      <button @click="searchForCurrentFilters">
+        <span class="material-icons"> search </span> Search
+      </button>
+      <button
+        :disabled="!isSelected"
+        :class="{ disabled: !isSelected, 'btn-alt': isSelected }"
+        @click="reset"
+      >
+        Clear
+      </button>
+    </div>
   </section>
 </template>
 
@@ -157,26 +178,45 @@ section {
     margin: 0 3rem;
   }
 
-  button {
-    cursor: pointer;
-    font-family: inherit;
-    width: 12.5rem;
-    height: 5rem;
-    border: 0;
-    border-radius: 16px;
-    background: rgba(235, 87, 87, 0.9);
-    color: #f2f2f2;
-    box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.1);
-    margin: 10rem auto 0;
-    font-size: 1.4rem;
-    font-weight: 700;
+  .buttons-container {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
+    justify-content: flex-end;
+    gap: 3.2rem;
+    margin-top: 5rem;
 
-    span {
-      font-size: 2rem;
+    .disabled {
+      cursor: default;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .btn-alt {
+      cursor: pointer;
+      background-color: transparent;
+      border: solid 1px rgba(235, 87, 87, 0.9);
+      color: rgba(235, 87, 87, 0.9);
+    }
+
+    button {
+      cursor: pointer;
+      font-family: inherit;
+      width: 12.5rem;
+      height: 5rem;
+      border: 0;
+      border-radius: 16px;
+      background: rgba(235, 87, 87, 0.9);
+      color: #f2f2f2;
+      box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.1);
+      font-size: 1.4rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+
+      span {
+        font-size: 2rem;
+      }
     }
   }
 }
